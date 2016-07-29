@@ -39,6 +39,9 @@ function BackboneModelWrapper ( ractive, model, keypath, prefix ) {
 	model.on( 'change', this.modelChangeHandler = function () {
 		const release = acquireLock( model );
 		ractive.set( prefix( model.changed ) );
+		if ( model.changedComputeds ) {
+			ractive.set( prefix( model.changedComputeds ) );
+		}
 		release();
 	});
 }
@@ -48,7 +51,7 @@ BackboneModelWrapper.prototype = {
 		this.value.off( 'change', this.modelChangeHandler );
 	},
 	get () {
-		return this.value.toJSON();
+		return this.value.toJSON( {computed: true} );
 	},
 	set ( keypath, value ) {
 		// Only set if the model didn't originate the change itself, and

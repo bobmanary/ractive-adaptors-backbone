@@ -26,7 +26,7 @@
 
 		filter: function filter(object) {
 			if (!adaptor.Backbone) {
-				throw new Error("Could not find Backbone. You must call adaptor.init(Backbone) - see http://TKTKTK.com for more information");
+				throw new Error("Could not find Backbone. You must do `adaptor.Backbone = Backbone` - see https://github.com/ractivejs/ractive-adaptors-backbone#installation for more information");
 			}
 			return object instanceof adaptor.Backbone.Model || object instanceof adaptor.Backbone.Collection;
 		},
@@ -45,7 +45,9 @@
 		model.on("change", this.modelChangeHandler = function () {
 			var release = acquireLock(model);
 			ractive.set(prefix(model.changed));
-			if (model.changedComputeds) { ractive.set(prefix(model.changedComputeds)); }
+			if (model.changedComputeds) {
+				ractive.set(prefix(model.changedComputeds));
+			}
 			release();
 		});
 	}
@@ -55,7 +57,7 @@
 			this.value.off("change", this.modelChangeHandler);
 		},
 		get: function get() {
-			return this.value.toJSON({computed: true});
+			return this.value.toJSON({ computed: true });
 		},
 		set: function set(keypath, value) {
 			// Only set if the model didn't originate the change itself, and
